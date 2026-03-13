@@ -1,141 +1,175 @@
-// 1. DATOS
-let menu = [
+
+var menu = [
     { id: 1, nombre: "☕ Café Marrón", precio: 1.5 },
     { id: 2, nombre: "🥟 Empanada de Carne", precio: 1.2 },
     { id: 3, nombre: "🧃 Jugo de Naranja", precio: 2.0 },
-    { id: 4, nombre: "🍕 Slice Pizza", precio: 2.5 }
+    { id: 4, nombre: "🍕 Slice Pizza", precio: 2.5 },
+    { id: 5, nombre: "🥐 Cachito de Jamón", precio: 1.8 },
+    { id: 6, nombre: "🥪 Sanduich de Pollo", precio: 3.0 },
+    { id: 7, nombre: "🍔 Hamburguesa Simple", precio: 4.5 },
+    { id: 8, nombre: "🥤 Malta Bien Fría", precio: 1.0 },
+    { id: 9, nombre: "🍩 Dona de Chocolate", precio: 1.25 },
+    { id: 10, nombre: "🥤 Refresco de Lata", precio: 1.5 }
 ];
-let carrito = [];
 
-let resenas = [
+var carrito = [];
+
+var resenas = [
     { id: 101, usuario: "pedrito67", texto: "la empanada esta brutal" },
     { id: 102, usuario: "chamollero24", texto: "servicio malo, me dieron el cafe frío." },
-    { id: 103, usuario: "alfonsoC0jio3", texto: "El cajero es un mierda de lo peor, no vengan." }
+    { id: 103, usuario: "alfonsoC0jio3", texto: "El cajero es un mierda de lo peor." }
 ];
 
-
-// 2. LOGIN
+// login
 function intentarLogin() {
-    let user = document.getElementById("username").value;
-    let pass = document.getElementById("password").value;
+    var user = document.getElementById("username").value;
+    var pass = document.getElementById("password").value;
 
     if (user === "ClienteUCV" && pass === "Central_123") {
-        entrarAModulo("modulo-cliente");
+        cambiarSeccion("modulo-cliente");
         mostrarMenu();
     } else if (user === "adminRoot" && pass === "cafetinAdmin") {
-        entrarAModulo("modulo-admin");
+        cambiarSeccion("modulo-admin");
         mostrarAdmin();
     } else if (user === "caja_01" && pass === "Cajero#123") {
-        entrarAModulo("modulo-caja");
+        cambiarSeccion("modulo-caja");
         mostrarCaja();
     } else {
-        alert("Usuario o clave incorrectos");
+        alert("Acceso denegado");
     }
 }
 
-function entrarAModulo(id) {
+function cambiarSeccion(id) {
+   
     document.getElementById("login-section").style.display = "none";
+    document.getElementById("modulo-cliente").style.display = "none";
+    document.getElementById("modulo-admin").style.display = "none";
+    document.getElementById("modulo-caja").style.display = "none";
+    
     document.getElementById(id).style.display = "block";
 }
 
 function cerrarSesion() { location.reload(); }
 
-// 3. CLIENTE
+// cliente
 function mostrarMenu() {
-    let contenedor = document.getElementById("contenedor-productos");
+    var contenedor = document.getElementById("contenedor-productos");
+    var molde = document.getElementById("molde-producto");
     contenedor.innerHTML = "";
-    menu.forEach(p => {
-        // Creamos el HTML usando la clase CSS que definimos arriba
-        contenedor.innerHTML += `
-            <div class="tarjeta-producto">
-                <h4>${p.nombre}</h4>
-                <p>$${p.precio.toFixed(2)}</p>
-                <button class="btn-comprar" onclick="comprar(${p.id})">Añadir</button>
-            </div>`;
+
+    menu.forEach(function(p) {
+        var clon = molde.content.cloneNode(true);
+        clon.querySelector(".txt-nombre").innerText = p.nombre;
+        clon.querySelector(".txt-precio").innerText = "$" + p.precio.toFixed(2);
+        clon.querySelector(".btn-comprar").onclick = function() { comprar(p.id); };
+        contenedor.appendChild(clon);
     });
 }
 
 function comprar(id) {
-    let producto = menu.find(p => p.id === id);
-    carrito.push(producto);
-    actualizarCarrito();
+    var prod = menu.find(function(item) { return item.id === id; });
+    carrito.push(prod);
+    actualizarVistaCarrito();
 }
 
-function actualizarCarrito() {
+function actualizarVistaCarrito() {
     document.getElementById("contador-productos").innerText = carrito.length;
-    let detalle = document.getElementById("detalle-carrito");
-    let totalSpan = document.getElementById("subtotal-carrito");
+    var detalle = document.getElementById("detalle-carrito");
+    var totalTxt = document.getElementById("subtotal-carrito");
     detalle.innerHTML = "";
-    let subtotal = 0;
-    carrito.forEach(p => {
-        detalle.innerHTML += `<p>✅ ${p.nombre} - $${p.precio}</p>`;
-        subtotal += p.precio;
+    var suma = 0;
+
+    carrito.forEach(function(p) {
+        var pElement = document.createElement("p");
+        pElement.innerText = "✅ " + p.nombre + " - $" + p.precio;
+        detalle.appendChild(pElement);
+        suma += p.precio;
     });
-    totalSpan.innerText = subtotal.toFixed(2);
+    totalTxt.innerText = suma.toFixed(2);
 }
 
-// 4. CAJA (Simulación de venta)
-function mostrarCaja() {
-    let lista = document.getElementById("lista-caja");
-    lista.innerHTML = "";
-    let total = 0;
-    // Simulamos que el cajero está viendo el pedido actual del cliente
-    menu.slice(0, 2).forEach(p => {
-        lista.innerHTML += `<li>${p.nombre} --- $${p.precio}</li>`;
-        total += p.precio;
-    });
-    document.getElementById("total-caja").innerText = total.toFixed(2);
+
+function finalizarCompra() {
+    if (carrito.length === 0) {
+        alert("El carrito está vacío, pidete algo pue");
+        return;
+    }
+
+    var total = carrito.reduce((acc, p) => acc + p.precio, 0);
+    
+    alert(" ¡Compra realizada con éxito! \n" +
+          "Total pagado: $" + total.toFixed(2) + "\n" +
+          "Gracias por tu compra");
+
+    carrito = [];
+    actualizarVistaCarrito();
 }
 
-function emitirRecibo() {
-    alert("Recibo Emitido ¡Gracias por su compra!");
-}
-
+// admin
 function mostrarAdmin() {
-    // 1. Dibujar productos (lo que ya tenías)
-    let listaProds = document.getElementById("lista-eliminar");
-    listaProds.innerHTML = "";
-    menu.forEach(p => {
-        listaProds.innerHTML += `
-            <div style="display:flex; justify-content:space-between; background:#f9f9f9; padding:10px; margin:5px; border-radius:8px;">
-                <span>${p.nombre} ($${p.precio})</span>
-                <button onclick="eliminarProducto(${p.id})" style="background:red; padding:5px 10px;">Eliminar</button>
-            </div>`;
+    
+    var listaR = document.getElementById("lista-resenas");
+    var moldeR = document.getElementById("molde-resena");
+    listaR.innerHTML = "";
+
+    resenas.forEach(function(r) {
+        var clon = moldeR.content.cloneNode(true);
+        clon.querySelector(".txt-usuario").innerText = r.usuario;
+        clon.querySelector(".txt-comentario").innerText = r.texto;
+        clon.querySelector(".btn-borrar-resena").onclick = function() { eliminarResena(r.id); };
+        listaR.appendChild(clon);
     });
 
-    // 2. PIEZA NUEVA: Dibujar reseñas
-    let contenedorResenas = document.getElementById("lista-resenas");
-    contenedorResenas.innerHTML = "";
-    resenas.forEach(r => {
-        contenedorResenas.innerHTML += `
-            <div style="background: #fff5f5; border-left: 5px solid #ff4444; padding: 10px; margin: 10px 0; border-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
-                <div>
-                    <strong style="color: #cc0000;">${r.usuario}:</strong> 
-                    <span style="font-style: italic;">"${r.texto}"</span>
-                </div>
-                <button onclick="eliminarResena(${r.id})" style="background: #cc0000; color: white; padding: 5px 10px; font-size: 0.8em;">Borrar</button>
-            </div>`;
+   
+    var listaE = document.getElementById("lista-eliminar");
+    listaE.innerHTML = "";
+    menu.forEach(function(p) {
+        var div = document.createElement("div");
+        div.style = "display:flex; justify-content:space-between; padding:10px; border-bottom:1px solid #eee";
+        div.innerHTML = "<span>" + p.nombre + "</span>";
+        
+        var btn = document.createElement("button");
+        btn.innerText = "Eliminar";
+        btn.style.background = "red";
+        btn.onclick = function() { eliminarProducto(p.id); };
+        
+        div.appendChild(btn);
+        listaE.appendChild(div);
     });
 }
+
 function agregarProducto() {
-    let nombre = document.getElementById("nombre-producto").value;
-    let precio = parseFloat(document.getElementById("precio-producto").value);
-    if (nombre && precio) {
-        menu.push({ id: Date.now(), nombre: nombre, precio: precio });
-        alert("Producto añadido");
+    var n = document.getElementById("nombre-producto").value;
+    var p = parseFloat(document.getElementById("precio-producto").value);
+    if (n && p) {
+        menu.push({ id: Date.now(), nombre: n, precio: p });
         mostrarAdmin();
-        document.getElementById("form-nuevo-producto").reset();
+        alert("Producto agregado al sistema");
     }
 }
 
 function eliminarProducto(id) {
-    menu = menu.filter(p => p.id !== id);
+    menu = menu.filter(function(x) { return x.id !== id; });
     mostrarAdmin();
 }
-function eliminarResena(id) {
-    // Filtramos la lista para quitar la que tenga el ID que tocamos
-    resenas = resenas.filter(r => r.id !== id);
-    alert("Reseña eliminada por violar las normas.");
-    mostrarAdmin(); // Volvemos a dibujar para que desaparezca de la vista
-}    
 
+function eliminarResena(id) {
+    resenas = resenas.filter(function(x) { return x.id !== id; });
+    mostrarAdmin();
+}
+
+// caja
+function mostrarCaja() {
+    var lista = document.getElementById("lista-caja");
+    lista.innerHTML = "";
+    var t = 0;
+    menu.slice(0, 2).forEach(function(p) {
+        var li = document.createElement("li");
+        li.innerText = p.nombre + " --- $" + p.precio;
+        lista.appendChild(li);
+        t += p.precio;
+    });
+    document.getElementById("total-caja").innerText = t.toFixed(2);
+}
+
+function emitirRecibo() { alert("Recibo generado correctamente."); }

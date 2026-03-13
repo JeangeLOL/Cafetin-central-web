@@ -4,23 +4,40 @@
     <meta charset="UTF-8">
     <title>Cafetín Central - UCV</title>
     <style>
-        /* CONFIGURACIÓN GENERAL */
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f0f2f5;
-            margin: 0;
-            padding: 20px;
-            color: #333;
-        }
-
-        /* COLORES UCV */
+        
         :root {
             --azul-ucv: #003893;
             --dorado-ucv: #f2b21a;
             --blanco: #ffffff;
         }
 
-        /* DISEÑO DE TARJETAS DE PRODUCTO */
+        body {
+            font-family:  Tahoma;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 20px;
+            color: #2f2f2f;
+        }
+
+        section {
+            background: var(--blanco);
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            max-width: 900px;
+            margin: 0 auto;
+            margin-bottom: 20px;
+        }
+
+        .header-modulo {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--dorado-ucv);
+            margin-bottom: 20px;
+        }
+
+        /* TARJETAS DE PRODUCTO */
         .contenedor-grid {
             display: flex;
             flex-wrap: wrap;
@@ -38,9 +55,7 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
 
-        .tarjeta-producto h4 { margin: 10px 0; color: var(--azul-ucv); }
-
-        /* BOTONES */
+        
         button {
             background-color: var(--azul-ucv);
             color: white;
@@ -49,43 +64,20 @@
             border-radius: 8px;
             cursor: pointer;
             font-weight: bold;
-            
         }
 
-        button:hover { opacity: 0.8; }
+        input {
+            width: 90%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #e6e4e4;
+            border-radius: 8px;
+        }
 
         .btn-comprar {
             background-color: var(--dorado-ucv);
             color: var(--azul-ucv);
             width: 100%;
-        }
-
-        /* SECCIONES Y MODULOS */
-        section {
-            background: var(--blanco);
-            padding: 25px;
-            border-radius: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
-            max-width: 900px;
-            margin: 0 auto;
-        }
-
-        #login-section { max-width: 350px; text-align: center; }
-        
-        input {
-            width: 90%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-        }
-
-        .header-modulo {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 2px solid var(--dorado-ucv);
-            margin-bottom: 20px;
         }
 
         .carrito-box {
@@ -111,18 +103,19 @@
             <h2 style="color: var(--azul-ucv);">Catálogo de Productos</h2>
             <button onclick="cerrarSesion()">Cerrar Sesión</button>
         </div>
-        <p>⭐ Tienes <strong>150 puntos</strong> de lealtad</p>
-        
         <div id="contenedor-productos" class="contenedor-grid"></div>
 
-        <div class="carrito-box">
-            <h3>🛒 Tu Carrito (<span id="contador-productos">0</span>)</h3>
-            <div id="detalle-carrito"><p>No hay productos aún.</p></div>
-            <p style="font-size: 1.2em;"><strong>Subtotal: $</strong><span id="subtotal-carrito">0.00</span></p>
-        </div>
-
-        <h3>📜 Historial de Compras</h3>
-        <div id="Historial" style="font-style: italic; color: gray;">
+        <<div class="carrito-box">
+    <h3>🛒 Tu Carrito (<span id="contador-productos">0</span>)</h3>
+    <div id="detalle-carrito"><p>No hay productos aún.</p></div>
+    <p style="font-size: 1.2em;"><strong>Total: $</strong><span id="subtotal-carrito">0.00</span></p>
+    
+    <button onclick="finalizarCompra()" style="background-color: #28a745; color: white; width: 100%; padding: 10px; margin-top: 10px; border-radius: 8px; cursor: pointer; font-weight: bold;">
+        💸 Finalizar Compra
+    </button>
+</div>
+       <h3>Historial de Compras</h3>
+        <div id="Historial">
             <p>15/02/2024 - 1 Empanada - $1.20 (Pagado)</p>
         </div>
     </section>
@@ -132,41 +125,48 @@
             <h2>Punto de Venta (Caja)</h2>
             <button onclick="cerrarSesion()">Cerrar Sesión</button>
         </div>
-        <div style="background: #f4f4f4; padding: 20px; border-radius: 10px;">
-            <h3>Captura de Pedido</h3>
-            <ul id="lista-caja"></ul>
-            <p style="font-size: 1.5em;"><strong>Total: $</strong><span id="total-caja">0.00</span></p>
-            <button onclick="emitirRecibo()" style="background: #28a745;">Emitir Recibo</button>
-        </div>
+        <ul id="lista-caja"></ul>
+        <p style="font-size: 1.5em;"><strong>Total a Cobrar: $</strong><span id="total-caja">0.00</span></p>
+        <button onclick="emitirRecibo()" style="background: #28a745;">Emitir Recibo</button>
     </section>
 
-   <section id="modulo-admin" style="display: none;">
+    <section id="modulo-admin" style="display: none;">
         <div class="header-modulo">
             <h2>Gestión Administrativa</h2>
             <button onclick="cerrarSesion()">Cerrar Sesión</button>
         </div>
-
-        <div id="form-nuevo-producto-container">
-            <h3>Agregar nuevo producto</h3>
-            <input type="text" id="nombre-producto" placeholder="Nombre">
-            <input type="number" id="precio-producto" placeholder="Precio">
-            <input type="text" id="url-foto" placeholder="URL de la imagen">
-            <button type="button" onclick="agregarProducto()" style="background: #28a745; width: 100%;">Guardar en Menú</button>
-        </div>
+        
+        <h3>Agregar nuevo producto</h3>
+        <input type="text" id="nombre-producto" placeholder="Nombre">
+        <input type="number" id="precio-producto" placeholder="Precio">
+        <input type="text" id="url-producucto" placeholder="URL">
+        <button onclick="agregarProducto()" style="background: #28a745; width: 100%;">Guardar en Menú</button>
 
         <hr>
-
-        <h3 style="color: var(--azul-ucv);">Moderación de Reseñas</h3>
-        <p style="font-size: 0.8em; color: gray;">Elimina comentarios ofensivos o inapropiados.</p>
-        <div id="lista-resenas">
-            </div>
+        <h3>Moderación de Reseñas</h3>
+        <div id="lista-resenas"></div>
 
         <hr>
-
-        <h3>Eliminar Productos del Menú</h3>
-        <div id="lista-eliminar">
-            </div>
+        <h3>Eliminar Productos</h3>
+        <div id="lista-eliminar"></div>
     </section>
+
+    <template id="molde-producto">
+        <div class="tarjeta-producto">
+            <h4 class="txt-nombre"></h4>
+            <p class="txt-precio"></p>
+            <button class="btn-comprar">Añadir</button>
+        </div>
+    </template>
+
+    <template id="molde-resena">
+        <div style="background: #fff5f5; border-left: 5px solid #ff4444; padding: 10px; margin: 10px 0; border-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <strong class="txt-usuario"></strong>: <span class="txt-comentario"></span>
+            </div>
+            <button class="btn-borrar-resena" style="background:red; font-size: 0.8em;">Borrar</button>
+        </div>
+    </template>
 
     <script src="script.js"></script>
 </body>
