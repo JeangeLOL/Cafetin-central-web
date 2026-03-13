@@ -1,4 +1,3 @@
-
 var menu = [
     { id: 1, nombre: "☕ Café Marrón", precio: 1.5 },
     { id: 2, nombre: "🥟 Empanada de Carne", precio: 1.2 },
@@ -40,7 +39,6 @@ function intentarLogin() {
 }
 
 function cambiarSeccion(id) {
-   
     document.getElementById("login-section").style.display = "none";
     document.getElementById("modulo-cliente").style.display = "none";
     document.getElementById("modulo-admin").style.display = "none";
@@ -79,15 +77,18 @@ function actualizarVistaCarrito() {
     detalle.innerHTML = "";
     var suma = 0;
 
-    carrito.forEach(function(p) {
-        var pElement = document.createElement("p");
-        pElement.innerText = "✅ " + p.nombre + " - $" + p.precio;
-        detalle.appendChild(pElement);
-        suma += p.precio;
-    });
+    if (carrito.length === 0) {
+        detalle.innerHTML = "<p>No hay productos aún.</p>";
+    } else {
+        carrito.forEach(function(p) {
+            var pElement = document.createElement("p");
+            pElement.innerText = "✅ " + p.nombre + " - $" + p.precio.toFixed(2);
+            detalle.appendChild(pElement);
+            suma += p.precio;
+        });
+    }
     totalTxt.innerText = suma.toFixed(2);
 }
-
 
 function finalizarCompra() {
     if (carrito.length === 0) {
@@ -96,7 +97,15 @@ function finalizarCompra() {
     }
 
     var total = carrito.reduce((acc, p) => acc + p.precio, 0);
+    var fecha = new Date().toLocaleDateString();
     
+    // ACTUALIZAR HISTORIAL VISUAL
+    var listaH = document.getElementById("lista-historial");
+    var itemH = document.createElement("p");
+    var nombres = carrito.map(p => p.nombre).join(", ");
+    itemH.innerHTML = `${fecha} - ${nombres} - $${total.toFixed(2)} (Pagado)`;
+    listaH.prepend(itemH);
+
     alert(" ¡Compra realizada con éxito! \n" +
           "Total pagado: $" + total.toFixed(2) + "\n" +
           "Gracias por tu compra");
@@ -107,7 +116,6 @@ function finalizarCompra() {
 
 // admin
 function mostrarAdmin() {
-    
     var listaR = document.getElementById("lista-resenas");
     var moldeR = document.getElementById("molde-resena");
     listaR.innerHTML = "";
@@ -120,7 +128,6 @@ function mostrarAdmin() {
         listaR.appendChild(clon);
     });
 
-   
     var listaE = document.getElementById("lista-eliminar");
     listaE.innerHTML = "";
     menu.forEach(function(p) {

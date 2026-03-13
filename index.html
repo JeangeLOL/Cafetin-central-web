@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <title>Cafetín Central - UCV</title>
     <style>
-        
         :root {
             --azul-ucv: #003893;
             --dorado-ucv: #f2b21a;
@@ -12,7 +11,7 @@
         }
 
         body {
-            font-family:  Tahoma;
+            font-family: Tahoma;
             background-color: #f0f2f5;
             margin: 0;
             padding: 20px;
@@ -37,7 +36,6 @@
             margin-bottom: 20px;
         }
 
-        /* TARJETAS DE PRODUCTO */
         .contenedor-grid {
             display: flex;
             flex-wrap: wrap;
@@ -55,7 +53,6 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
 
-        
         button {
             background-color: var(--azul-ucv);
             color: white;
@@ -105,18 +102,21 @@
         </div>
         <div id="contenedor-productos" class="contenedor-grid"></div>
 
-        <<div class="carrito-box">
-    <h3>🛒 Tu Carrito (<span id="contador-productos">0</span>)</h3>
-    <div id="detalle-carrito"><p>No hay productos aún.</p></div>
-    <p style="font-size: 1.2em;"><strong>Total: $</strong><span id="subtotal-carrito">0.00</span></p>
-    
-    <button onclick="finalizarCompra()" style="background-color: #28a745; color: white; width: 100%; padding: 10px; margin-top: 10px; border-radius: 8px; cursor: pointer; font-weight: bold;">
-        💸 Finalizar Compra
-    </button>
-</div>
-       <h3>Historial de Compras</h3>
+        <div class="carrito-box">
+            <h3>🛒 Tu Carrito (<span id="contador-productos">0</span>)</h3>
+            <div id="detalle-carrito"><p>No hay productos aún.</p></div>
+            <p style="font-size: 1.2em;"><strong>Total: $</strong><span id="subtotal-carrito">0.00</span></p>
+            
+            <button onclick="finalizarCompra()" style="background-color: #28a745; color: white; width: 100%; padding: 10px; margin-top: 10px; border-radius: 8px; cursor: pointer; font-weight: bold;">
+                💸 Finalizar Compra
+            </button>
+        </div>
+
+        <h3>Historial de Compras</h3>
         <div id="Historial">
-            <p>15/02/2024 - 1 Empanada - $1.20 (Pagado)</p>
+            <div id="lista-historial">
+                <p>15/02/2024 - 1 Empanada - $1.20 (Pagado)</p>
+            </div>
         </div>
     </section>
 
